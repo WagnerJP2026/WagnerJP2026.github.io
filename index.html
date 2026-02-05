@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="ja" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - よくある質問</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    * {
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    }
+    .accordion-content.open {
+      max-height: 800px;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    .accordion-icon {
+      transition: transform 0.3s ease;
+    }
+    .accordion-icon.rotate {
+      transform: rotate(180deg);
+    }
+    .category-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+    .category-card {
+      transition: all 0.3s ease;
+    }
+    .fade-in {
+      animation: fadeIn 0.3s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full bg-slate-50 text-slate-800 overflow-auto">
+  <div id="app-wrapper" class="w-full h-full"><!-- Header -->
+   <header class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-stone-900 py-8 px-4 shadow-lg border-b-4 border-stone-900">
+    <div class="max-w-5xl mx-auto">
+     <div class="flex items-center gap-6">
+      <div class="hidden md:flex items-center justify-center w-32 h-20 bg-white rounded-lg shadow-md border-2 border-stone-900 p-2 flex-shrink-0">
+       <svg class="w-full h-full" viewbox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="100" height="40" rx="4" fill="#1c1917" /> <text x="60" y="45" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#eab308" text-anchor="middle">
+         WAGNER
+        </text> <circle cx="25" cy="40" r="8" fill="#eab308" /> <circle cx="95" cy="40" r="8" fill="#eab308" />
+       </svg>
+      </div>
+      <div>
+       <h1 id="site-title" class="text-3xl md:text-4xl font-bold mb-2">よくある質問</h1>
+       <p class="text-stone-800 text-lg">お探しの情報を見つけてください</p>
+      </div>
+     </div>
+    </div>
+   </header><!-- Search Section -->
+   <section class="bg-white shadow-md py-6 px-4 sticky top-0 z-40 border-b-2 border-yellow-400">
+    <div class="max-w-3xl mx-auto">
+     <div class="relative">
+      <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg><input type="text" id="search-input" placeholder="キーワードで検索..." class="w-full pl-12 pr-4 py-4 border-2 border-yellow-400 rounded-xl focus:border-stone-900 focus:outline-none text-lg transition-colors">
+     </div>
+     <div class="mt-4">
+      <p class="text-sm font-medium text-stone-600 mb-2">よく聞かれるタグ:</p>
+      <div class="flex flex-wrap gap-2"><button class="tag-btn px-4 py-2 bg-yellow-100 hover:bg-yellow-400 text-stone-900 rounded-full text-sm font-medium transition-colors border border-yellow-400" data-tag="メンテナンス">メンテナンス </button> <button class="tag-btn px-4 py-2 bg-yellow-100 hover:bg-yellow-400 text-stone-900 rounded-full text-sm font-medium transition-colors border border-yellow-400" data-tag="エアレス">エアレス </button> <button class="tag-btn px-4 py-2 bg-yellow-100 hover:bg-yellow-400 text-stone-900 rounded-full text-sm font-medium transition-colors border border-yellow-400" data-tag="洗浄機">洗浄機 </button> <button class="tag-btn px-4 py-2 bg-yellow-100 hover:bg-yellow-400 text-stone-900 rounded-full text-sm font-medium transition-colors border border-yellow-400" data-tag="故障">故障 </button> <button class="tag-btn px-4 py-2 bg-yellow-100 hover:bg-yellow-400 text-stone-900 rounded-full text-sm font-medium transition-colors border border-yellow-400" data-tag="塗装">塗装 </button>
+      </div>
+     </div>
+     <div id="search-results" class="mt-4 hidden">
+      <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+       <h3 class="text-sm font-semibold text-stone-600 mb-3">検索結果</h3>
+       <div id="search-results-list" class="space-y-2"></div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <main id="main-view" class="max-w-5xl mx-auto px-4 py-8 pb-32"><!-- Home View -->
+    <section id="home-view"><!-- Basic FAQ Section -->
+     <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+       <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center border-2 border-stone-900">
+        <svg class="w-6 h-6 text-stone-900" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+       </div>
+       <h2 class="text-2xl font-bold text-stone-900">基本編</h2>
+      </div>
+      <div id="basic-faq" class="space-y-3"></div>
+     </section><!-- Category Section -->
+     <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+       <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center border-2 border-stone-900">
+        <svg class="w-6 h-6 text-stone-900" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+       </div>
+       <h2 class="text-2xl font-bold text-stone-900">商品カテゴリーから検索</h2>
+      </div>
+      <div id="categories" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+     </section><!-- Contact Form Section -->
+     <section class="mb-12">
+      <div class="flex items-center gap-3 mb-6">
+       <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center border-2 border-stone-900">
+        <svg class="w-6 h-6 text-stone-900" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+       </div>
+       <h2 id="contact-title" class="text-2xl font-bold text-stone-900">お問い合わせ</h2>
+      </div>
+      <div class="bg-white rounded-xl shadow-md p-6">
+       <form id="contact-form" class="space-y-4">
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">お名前 <span class="text-red-500">*</span></label> <input type="text" id="contact-name" required class="w-full px-4 py-3 border-2 border-yellow-400 rounded-lg focus:border-stone-900 focus:outline-none transition-colors">
+        </div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">メールアドレス <span class="text-red-500">*</span></label> <input type="email" id="contact-email" required class="w-full px-4 py-3 border-2 border-yellow-400 rounded-lg focus:border-stone-900 focus:outline-none transition-colors">
+        </div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">カテゴリー</label> <select id="contact-category" class="w-full px-4 py-3 border-2 border-yellow-400 rounded-lg focus:border-stone-900 focus:outline-none transition-colors bg-white"> <option value="">選択してください</option> <option value="エアレス">エアレス</option> <option value="高圧洗浄機">高圧洗浄機</option> <option value="温風低圧">温風低圧</option> <option value="液体塗装">液体塗装</option> <option value="粉体塗装">粉体塗装</option> <option value="静電">静電</option> <option value="その他">その他</option> </select>
+        </div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1">お問い合わせ内容 <span class="text-red-500">*</span></label> <textarea id="contact-message" rows="4" required class="w-full px-4 py-3 border-2 border-yellow-400 rounded-lg focus:border-stone-900 focus:outline-none transition-colors resize-none"></textarea>
+        </div><button type="submit" id="submit-btn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-stone-900 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 border-2 border-stone-900"> <span>送信する</span>
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+         </svg></button>
+       </form>
+       <div id="form-message" class="mt-4 hidden"></div>
+      </div>
+     </section>
+    </section><!-- Category Detail View (Question List) -->
+    <section id="category-detail-view" class="hidden"><button id="back-to-home" class="flex items-center gap-2 text-stone-600 hover:text-stone-900 mb-6 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg><span class="font-medium">ホームに戻る</span> </button>
+     <div class="mb-8">
+      <div class="flex items-center gap-4 mb-4">
+       <div id="detail-icon" class="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl"></div>
+       <div>
+        <h2 id="detail-title" class="text-3xl font-bold text-stone-900"></h2>
+        <p id="detail-description" class="text-stone-600 mt-1"></p>
+       </div>
+      </div>
+     </div>
+     <div class="bg-white rounded-xl shadow-md p-6 border-2 border-stone-200">
+      <h3 class="text-xl font-bold text-stone-900 mb-4">質問一覧</h3>
+      <div id="questions-links" class="space-y-3"></div>
+     </div>
+    </section><!-- Question Answer Page -->
+    <section id="answer-detail-view" class="hidden"><button id="back-to-category" class="flex items-center gap-2 text-stone-600 hover:text-stone-900 mb-6 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg><span class="font-medium">質問一覧に戻る</span> </button>
+     <div class="bg-white rounded-xl shadow-md p-8 border-2 border-stone-200">
+      <div class="mb-6">
+       <div class="flex items-start gap-3 mb-4"><span class="w-10 h-10 bg-yellow-400 text-stone-900 rounded-full flex items-center justify-center font-bold text-lg border-2 border-stone-900 flex-shrink-0">Q</span>
+        <h2 id="answer-question" class="text-2xl font-bold text-stone-900 leading-relaxed"></h2>
+       </div>
+      </div>
+      <div class="flex items-start gap-3"><span class="w-10 h-10 bg-stone-900 text-yellow-400 rounded-full flex items-center justify-center font-bold text-lg border-2 border-stone-900 flex-shrink-0">A</span>
+       <div class="flex-1">
+        <p id="answer-content" class="text-stone-700 text-lg leading-relaxed whitespace-pre-line"></p>
+        <div id="answer-tags" class="mt-6 flex flex-wrap gap-2"></div>
+       </div>
+      </div>
+     </div>
+     <div class="mt-8 bg-yellow-50 rounded-xl p-6 border-2 border-yellow-200">
+      <h3 class="text-lg font-bold text-stone-900 mb-3 flex items-center gap-2">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+       </svg> 関連する質問</h3>
+      <div id="related-questions" class="space-y-2"></div>
+     </div>
+    </section>
+   </main><!-- AI Chatbot -->
+   <div id="chatbot-container" class="fixed bottom-6 right-6 z-50"><!-- Chat Button --> <button id="chat-toggle-btn" class="w-16 h-16 bg-yellow-400 hover:bg-yellow-500 text-stone-900 rounded-full shadow-lg flex items-center justify-center transition-all border-2 border-stone-900 hover:scale-110">
+     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+     </svg></button> <!-- Chat Window -->
+    <div id="chat-window" class="hidden absolute bottom-20 right-0 w-96 h-[32rem] bg-white rounded-2xl shadow-2xl border-2 border-stone-900 flex flex-col overflow-hidden"><!-- Chat Header -->
+     <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-stone-900 px-6 py-4 flex items-center justify-between border-b-2 border-stone-900">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center border-2 border-stone-900">
+        <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+       </div>
+       <div>
+        <h3 class="font-bold text-lg">AIアシスタント</h3>
+        <p class="text-xs text-stone-800">質問にお答えします</p>
+       </div>
+      </div><button id="chat-close-btn" class="w-8 h-8 hover:bg-yellow-600 rounded-full flex items-center justify-center transition-colors">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+       </svg></button>
+     </div><!-- Chat Messages -->
+     <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+      <div class="flex gap-3">
+       <div class="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 border border-stone-900">
+        <svg class="w-5 h-5 text-stone-900" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+       </div>
+       <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-stone-200 max-w-[80%]">
+        <p class="text-stone-700 text-sm leading-relaxed">こんにちは！塗装機器について何でもお聞きください。</p>
+       </div>
+      </div>
+     </div><!-- Quick Questions -->
+     <div id="quick-questions" class="px-4 py-2 bg-white border-t border-stone-200">
+      <p class="text-xs text-stone-500 mb-2">よくある質問:</p>
+      <div class="flex flex-wrap gap-2"><button class="quick-q-btn px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-stone-800 rounded-full text-xs transition-colors border border-yellow-300" data-question="エアレスとは何ですか？"> エアレスとは？ </button> <button class="quick-q-btn px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-stone-800 rounded-full text-xs transition-colors border border-yellow-300" data-question="メンテナンス方法を教えてください"> メンテナンス </button> <button class="quick-q-btn px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-stone-800 rounded-full text-xs transition-colors border border-yellow-300" data-question="故障した時はどうすればいいですか？"> 故障対応 </button>
+      </div>
+     </div><!-- Chat Input -->
+     <div class="p-4 bg-white border-t-2 border-stone-200">
+      <form id="chat-form" class="flex gap-2"><input type="text" id="chat-input" placeholder="質問を入力..." class="flex-1 px-4 py-3 border-2 border-yellow-400 rounded-xl focus:border-stone-900 focus:outline-none text-sm" autocomplete="off"> <button type="submit" id="chat-send-btn" class="w-12 h-12 bg-yellow-400 hover:bg-yellow-500 text-stone-900 rounded-xl transition-colors flex items-center justify-center border-2 border-stone-900 flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg></button>
+      </form>
+     </div>
+    </div>
+   </div><!-- Footer -->
+   <footer class="bg-stone-900 text-yellow-400 py-8 px-4 mt-12 border-t-4 border-yellow-400">
+    <div class="max-w-5xl mx-auto">
+     <div class="grid md:grid-cols-3 gap-8">
+      <div>
+       <h3 class="text-xl font-bold mb-4">日本ワグナー・スプレーテック株式会社</h3>
+       <p class="text-stone-400 text-sm leading-relaxed">〒574-0057<br>
+         大阪府大東市新田西町2番35号</p>
+      </div>
+      <div>
+       <h4 class="font-semibold mb-3">カテゴリー</h4>
+       <ul class="space-y-2 text-sm text-stone-400">
+        <li><a href="#" class="hover:text-yellow-400 transition-colors">エアレス</a></li>
+        <li><a href="#" class="hover:text-yellow-400 transition-colors">高圧洗浄機</a></li>
+        <li><a href="#" class="hover:text-yellow-400 transition-colors">温風低圧</a></li>
+        <li><a href="#" class="hover:text-yellow-400 transition-colors">静電塗装</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-semibold mb-3">SNS</h4>
+       <div class="flex gap-4"><a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-stone-900 rounded-full flex items-center justify-center transition-colors">
+         <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+         </svg></a> <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-yellow-400 hover:bg-yellow-500 text-stone-900 rounded-full flex items-center justify-center transition-colors">
+         <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+         </svg></a>
+       </div>
+      </div>
+     </div>
+     <div class="mt-8 pt-6 border-t border-stone-800 text-center">
+      <p id="footer-text" class="text-sm text-stone-400">© 2026 日本ワグナー・スプレーテック株式会社</p>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // FAQ Data
+    const basicFAQs = [
+      { id: 1, question: "エアレスエアコートとは何ですか？", answer: "エアレスエアコートは、エアレス塗装とエアスプレー塗装を組み合わせた塗装方式です。エアレスポンプで塗料を高圧で送り出し、ガンのエアキャップから圧縮空気噴射することで、微粒化と仕上がりの両立を実現します。エアレスの高効率性とエアスプレーの美しい仕上がりを兼ね備えています。", tags: ["エアレス", "エアコート", "塗装方式", "基本"] },
+      { id: 2, question: "高圧洗浄機の適切な圧力設定は？", answer: "洗浄対象によって適切な圧力が異なります。一般的な汚れには10-15MPa、頑固な汚れには15-20MPa、コンクリートや石材には20-30MPaが目安です。圧力が高すぎると対象物を傷つける可能性があるため、低圧から試すことをお勧めします。", tags: ["高圧洗浄機", "圧力", "設定", "基本"] },
+      { id: 3, question: "静電塗装の仕組みを教えてください", answer: "静電塗装は、塗料粒子に電荷を与え、接地された被塗物との間の静電引力を利用して塗着させる方式です。塗料が被塗物に引き寄せられるため、塗着効率が高く、裏回りも良好です。特に複雑な形状の製品に適しています。", tags: ["静電", "塗装", "仕組み", "基本"] },
+      { id: 4, question: "温風低圧塗装のメリットは？", answer: "温風低圧塗装（HVLP）は、低圧（0.07MPa以下）で熱風を使用することで、塗料の飛散を抑え、塗着効率を向上させます。環境に優しく、塗料のムダを削減できます。また、オーバースプレーが少ないため、作業環境の改善にも貢献します。", tags: ["温風低圧", "HVLP", "メリット", "基本"] },
+      { id: 5, question: "粉体塗装と液体塗装の違いは？", answer: "粉体塗装は溶剤を使用せず、粉末状の塗料を静電気で付着させ、加熱硬化させます。VOC排出がなく環境に優しい反面、色替えに手間がかかります。液体塗装は従来の溶剤系塗料を使用し、色替えが容易ですが、VOC管理が必要です。", tags: ["粉体塗装", "液体塗装", "違い", "比較", "基本"] }
+    ];
+
+    const categories = [
+      { 
+        id: "airless", 
+        name: "エアレス", 
+        icon: "💨", 
+        color: "bg-yellow-400", 
+        description: "エアレス塗装に関する情報",
+        questions: [
+          { 
+            id: "airless-pump",
+            q: "エアレスポンプの選び方は？", 
+            a: "エアレスポンプを選ぶ際は、以下のポイントを考慮してください：\n\n1. 吐出量：1日の作業量に応じて選択\n2. 最高圧力：使用する塗料の塗着度に対応できるか\n3. 最大チップサイズ：塗装する面積と仕上がりで決定\n4. 電源：単相100V、三相200Vなど現場環境に合わせる\n5. 耐久性：連続使用時間や保証期間を確認\n\n小規模な現場では2.5L/min程度、大規模では5L/min以上がおすすめです。",
+            tags: ["エアレス", "ポンプ", "選び方"]
+          },
+          { 
+            id: "tip-size",
+            q: "チップサイズの決め方は？", 
+            a: "チップサイズは塗料の種類と仕上がりの細かさで決まります：\n\n■ 小チップ（0.009-0.013インチ）\n・ステイン、ニス等の低粘度塗料\n・細かい仕上がりが必要な場合\n\n■ 中チップ（0.015-0.021インチ）\n・一般的な建築用塗料\n・最も汎用性が高い\n\n■ 大チップ（0.023-0.031インチ）\n・高粘度塗料、防水材\n・大面積の塗装\n\nチップ選択の目安：塗料メーカー推奨値の1.5倍の圧力余裕を見る",
+            tags: ["エアレス", "チップ", "サイズ"]
+          },
+          { 
+            id: "gun-maintenance",
+            q: "エアレスガンのメンテナンス方法は？", 
+            a: "エアレスガンの適切なメンテナンスで長寿命化：\n\n日常メンテナンス】\n・使用後は必ずフラッシング（溶剤洗浄）\n・ガンフィルターの清掃または交換\n・チップとガードの洗浄\n\n【定期メンテナンス（月1回）】\n・ニードル、シートの摩耗チェック\n・パッキン類の交換\n・可動部への注油\n\n【保管時】\n・ガンプロテクターオイルでコーティング\n・分解して乾燥保管\n\nトラブル予防には、塗料をしっかり濾過することが重要です。",
+            tags: ["エアレス", "メンテナンス", "ガン"]
+          },
+          { 
+            id: "dilution",
+            q: "塗料の希釈率の目安は？", 
+            a: "エアレス塗装での希釈率の基本：\n\n【水性塗料】\n・一般：5-10%\n・高粘度：10-15%\n・ステイン：そのまま～5%\n\n【溶剤系塗料】\n・ラッカー：10-20%\n・ウレタン���5-10%\n・エポキシ：メーカー指定通り\n\n確認方法：\n1. 粘度カップで20-30秒を目安\n2. 試し吹きで霧化状態を確認\n3. 垂れやピンホールがないか確認\n\n※必ず��ーカー推奨値を優先してください",
+            tags: ["エアレス", "塗料", "希釈"]
+          }
+        ]
+      },
+      { 
+        id: "pressure-washer", 
+        name: "高圧洗浄機", 
+        icon: "🚿", 
+        color: "bg-yellow-400", 
+        description: "高圧洗浄機の使用方法とメンテナンス",
+        questions: [
+          { 
+            id: "nozzle-types",
+            q: "ノズルの種類と用途は？", 
+            a: "高圧洗浄機のノズルは噴射角度で使い分けます：\n\n🔴 0度（レッド）：最高圧\n・頑固な汚れ、塗装剥離\n・コンクリートの目地\n※対象物を傷つけやすいので注意\n\n🟡 15度（イエロー）：高圧\n・壁面の汚れ\n・コンクリート洗浄\n\n🟢 25度（グリーン）：中圧\n・一般的な外壁\n・車両洗浄\n\n⚪ 40度（ホワイト）：低圧\n・窓ガラス\n・デリケートな表面\n\n⚫ 65度���ブラック）：洗剤用\n・低圧で洗剤を塗布",
+            tags: ["洗浄機", "ノズル", "種類"]
+          },
+          { 
+            id: "water-flow",
+            q: "適切な水量の設定は？", 
+            a: "水量設定は洗浄効率と対象物保護のバランスが重要：\n\n【一般的な目安】\n・家庭用：8-10L/min\n・業務用：15-20L/min\n・工業用：20L/min以上\n\n【圧力と水量の関係】\n・高圧・少量：浸透力重視（塗装剥離など）\n・中圧・多量：広範囲洗浄\n・低圧・多量：洗剤洗浄\n\n水量不足のサイン：\n・ポンプの異音\n・圧力の不安定\n・作業効率の低下\n\n給水源の水量も確認し、機械の仕様を超えないように注意してください。",
+            tags: ["洗浄機", "水量", "設定"]
+          },
+          { 
+            id: "freeze-prevention",
+            q: "冬場の凍結防止対策は？", 
+            a: "冬場の凍結は機械故障の主要因です。以下の対策を：\n\n【作業後の処理（必須）】\n1. 給水・排水ホースの水抜き\n2. ポンプ内の水抜き\n3. 不凍液の注入\n4. 機械を室内保管\n\n【作業中の注意】\n・気温5度以下では短時間でも凍結リスク\n・休憩時もポンプを運転し続ける\n・ホースに断熱カバーを使用\n\n【凍結してしまったら】\n・無理に運転しない\n・温室でゆっくり解凍\n・解凍後、各部の点検\n\n凍結によるポンプ破損は保証対象外のことが多��ので注意！",
+            tags: ["洗浄機", "凍結", "メンテナンス"]
+          }
+        ]
+      },
+      { 
+        id: "hvlp", 
+        name: "温風低圧", 
+        icon: "🌡️", 
+        color: "bg-yellow-400", 
+        description: "HVLP塗装システムについて",
+        questions: [
+          { 
+            id: "hvlp-adjustment",
+            q: "HVLPガンの調整方法は？", 
+            a: "HVLPガンの3つの基本調整：\n\n【1. エアー圧調整】\n・ガン入口で0.7bar以下に設定\n・キャップ先端では0.07MPa以下\n・圧力計で必ず確認\n\n【2. パターン調整】\n・パターン調整ネジで広がりを制御\n・小物：狭パターン（円形に近い）\n・大面積：広パターン（楕円形）\n\n【3. 塗料吐出量調整】\n・ニードル調整ネジで流量制御\n・試し吹きで適量を確認\n・一般的に1/2～3/4開度\n\n基本は「低圧・低吐出」から始めて徐々に調整してください。",
+            tags: ["温風低圧", "HVLP", "調整"]
+          },
+          { 
+            id: "temp-setting",
+            q: "温風温度の設定基準は？", 
+            a: "温風温度は塗料の粘度と作業環境温度調整：\n\n【標準温度設定】\n・水性塗料：40-50℃\n・溶剤系塗料：50-60℃\n・高粘度塗料：60-70℃\n\n【温度設定のメリット】\n・塗料粘度の最適化\n・霧化性能の向上\n・塗装効率のアップ\n・希釈剤の削減\n\n【注意点】\n・温度が高すぎると塗料の変質\n・低すぎると効果が低い\n・外気温によって微調整が必要\n\n作業環境温度が10℃下がると、設定温度を5-10℃上げることを推奨します。",
+            tags: ["温風低圧", "温度", "設定"]
+          },
+          { 
+            id: "suitable-paints",
+            q: "適した塗料の種類？", 
+            a: "HVLPに適した塗料の特性：\n\n【最適な塗料】\n✓ 水性塗料（各種）\n✓ 低粘度ウレタン\n✓ ラッカー系\n✓ ステイン\n\n【適している塗料】\n○ 2液ウレタン（適切な希釈）\n○ 水性エポキシ\n○ アクリル塗料\n\n【不向きな塗料】\n✗ 超高粘度材（シーラーなど）\n✗ 速乾性が高すぎる塗料\n✗ 粒子が大きい塗料\n\nHVLPは塗着効率が高い（70-80%）ため、高価な塗料でもコスト削減効果があります。",
+            tags: ["温風低圧", "塗料", "種類"]
+          }
+        ]
+      },
+      { 
+        id: "liquid", 
+        name: "液体塗装", 
+        icon: "🎨", 
+        color: "bg-yellow-400", 
+        description: "液体塗装の基礎知識",
+        questions: [
+          { 
+            id: "solvent-selection",
+            q: "溶剤の選び方は？", 
+            a: "塗料に適した溶剤の選択方法：\n\n【塗料別推奨溶剤】\n■ ラッカー系\n→ラッカーシンナー（速乾型）\n\n■ ウレタン・エポキシ\n→専用シンナー（中速乾～遅乾）\n\n■ アクリル\n→アクリルシンナー\n\n■ 油性\n→ペイント薄め液、ミネラルスピリット\n\n【選択のポイント】\n1. 塗料メーカー推奨品を使用\n2. 季節に応じて乾燥速度を調整\n　・夏：遅乾型\n　・冬：標準～速乾型\n3. 作業環境の換気状況を考慮\n\n※他���製溶剤を使用すると塗膜不良の原因に！",
+            tags: ["液体塗装", "溶剤", "選び方"]
+          },
+          { 
+            id: "spray-pattern",
+            q: "スプレーパターンの調整は？", 
+            a: "美しい仕上がりのためのパターン調整：\n\n【理想的なパターン】\n・均一な楕円形\n・中央が濃く、周辺がぼやける\n・左右対称\n\n【不良パターンと原因】\n🔸 中抜け\n→エア圧が高すぎる\n→塗料圧が低い\n\n🔸 片流れ\n→エアキャップの詰まり\n→ノズルの摩耗\n\n🔸 尾引き\n→塗料粘度が高い\n→エア圧が低い\n\n【調整手順】\n1. テストパターンを確認\n2. エア圧を調整（0.2-0.3MPa）\n3. パターン幅を調整\n4. 塗料流量を微調整\n\n距離は20-30cmを保持してください。",
+            tags: ["液体塗装", "スプレー", "パターン"]
+          },
+          { 
+            id: "drying-time",
+            q: "乾燥時間の目安は？", 
+            a: "塗料別の乾燥時間と管理：\n\n【指触乾燥（触れる程度）】\n・ラッカー：5-10分\n・アクリル：10-20分\n・ウレタン：30分-1時間\n・エポキシ：2-4時間\n\n【半硬化（次工程可能）】\n・ラッカー：30分-1時間\n・アクリル：2-4時間\n・ウレタン：4-6時間\n・エポキシ：12-24時間\n\n【完全硬化】\n・ラッカー：1週間\n・アクリル：1週間\n・ウレタン：7-10日\n・エポキシ：7-14日\n\n※温度20℃、湿度65%を基準\n※気温が10℃下がると乾燥時間は約2倍に\n※湿度が高いと乾燥遅延や白化の原因に",
+            tags: ["液体塗装", "乾燥", "時間"]
+          }
+        ]
+      },
+      { 
+        id: "powder", 
+        name: "粉体塗装", 
+        icon: "✨", 
+        color: "bg-yellow-400", 
+        description: "粉体塗装の特徴と管理",
+        questions: [
+          { 
+            id: "baking-temp",
+            q: "焼付温度と時間の設定は？", 
+            a: "粉体塗装の焼付条件設定：\n\n【一般的なエポキシ・ポリエステル粉体】\n・温度：180-200℃\n・時間：15-20分\n・測定点：製品表面温度\n\n【低温硬化タイプ】\n・温度：140-160℃\n・時間：20-30分\n・用途：熱に弱い素材\n\n【高耐候性タイプ】\n・温度：200-220℃\n・時間：20-30分\n・用途：屋外使用品\n\n【重要ポイント】\n1. 予熱時間を含めた総加熱時間で管理\n2. 製品の肉厚により時間調整\n3. 温度ムラは±5℃以内に\n4. 過度な加熱は変色や劣化の原因\n\n※必ず粉体メーカーの推奨条件を確認！",
+            tags: ["粉体塗装", "焼付", "温度"]
+          },
+          { 
+            id: "film-thickness",
+            q: "膜厚の管理方法は？", 
+            a: "粉体塗装の膜厚管理とトラブル対策：\n\n【標準膜厚】\n・一般用途：60-80μm\n・防食重視：80-120μm\n・薄膜仕様：40-60μm\n\n【膜厚測定】\n・電磁式膜厚計を使用\n・各製品5点以上測定\n・測定位置をマーキング\n\n【膜厚の管理】\n■ 厚すぎる場合（100μm超）\n→塗装距離を遠く\n→ガンの��動速度を速く\n→電圧を下げる\n→回収粉の比率を確認\n\n■ 薄すぎる場合（50μm未満）\n→塗装距離を近く\n→ガンの移動速度を遅く\n→電圧を上げる\n→粉体の吐出量を増やす\n\n膜厚ムラは±10μm以内を目標に！",
+            tags: ["粉体塗装", "膜厚", "管理"]
+          },
+          { 
+            id: "color-change",
+            q: "色替え時の注意点は？", 
+            a: "粉体塗装の色替え作業手順：\n\n【準備作業】\n1. 前色の完全排出\n2. ブース内の清掃\n3. ガンの分解清掃\n4. 配管の吹き払い\n5. 回収システムの清掃\n\n【色替えのルール】\n\n■ 効率的な色替え順序\n明色→暗色、明色の順を避ける\n白→黄→赤→青→黒→白の順が効率的\n\n■ クリーニング方法\n・圧縮���気で完全ブロー\n・ガンフィルターを交換\n・ホッパーは空にする\n・静電気除���\n\n■ 時間短縮のコツ\n・色別にガン・ホースをセット用意\n・クイック継手で交換式に\n・回収粉は色別保管\n\n【テスト塗装】\n色替え後は必ずテスト塗装で混色をチェック！",
+            tags: ["粉体塗装", "色替え", "メンテナンス"]
+          }
+        ]
+      },
+      { 
+        id: "electrostatic", 
+        name: "静電", 
+        icon: "⚡", 
+        color: "bg-yellow-400", 
+        description: "静電塗装の原理と応用",
+        questions: [
+          { 
+            id: "voltage-setting",
+            q: "静電ガンの電圧設定は？", 
+            a: "静電塗装の電圧設定と調整：\n\n【標準電圧範囲】\n■ 液体塗装\n・手動ガン：60-90kV\n・自動ガン：80-100kV\n\n■ 粉体塗装\n・一般：60-90kV\n・複雑形状：50-70kV\n・薄膜塗装：40-60kV\n\n【電圧設定の原則】\n\n🔼 電圧を上げると\n・塗着効率UP\n・裏回り性能UP\n・ピンホール発生リスク増\n・粉溜まり発生\n\n🔽 電圧を下げると\n・仕上がり滑らか\n・ピンホール減少\n・塗着効率DOWN\n\n【最適化の手順】\n1. 標準値からスタート\n2. テスト塗装\n3. 仕上が���を確認\n4. ±10kVずつ調整\n\n湿度が高い日は電圧を5-10kV下げてください。",
+            tags: ["静電", "電圧", "設定"]
+          },
+          { 
+            id: "grounding",
+            q: "アースの取り方は？", 
+            a: "静電塗装で最も重要なアース処理：\n\n【基本原則】\n⚡ 被塗物は完全にアース（接地）\n⚡ アース抵抗は1MΩ以下\n⚡ 塗装ブースもアース\n\n【アース方法】\n\n■ 自動ライン\n・コンベアチェーンで自動接地\n・ハンガーとの接触を確認\n・定期的な導通チェック\n\n■ 手動ブース\n・製品を金属台に設置\n・接地線を確実に接���\n・塗料がアース点を覆わないように\n\n【不良アースの症状】\n✗ 塗料がはじく\n✗ 塗着量が少ない\n✗ ムラになる\n✗ スパークが発生\n\n【アースチェック】\n・テスターで抵抗測定\n・塗装前に必ず確認\n・接触部の塗膜除去\n\nアース不良は塗装不良の80%の原因です！",
+            tags: ["静電", "アース", "接地"]
+          },
+          { 
+            id: "faraday-cage",
+            q: "ファラデーケージ効果とは？", 
+            a: "静電塗装の最大の弱点、ファラデーケージ効果：\n\n【現象の説明】\n窪みや内側など、電気力線が届きにくい部分に塗料が付着しにくい現象\n\n【発生しやすい形状】\n・深い窪み（深さ>開口部直径）\n・パイプの内側\n・L字、コーナー部\n・狭い隙間\n\n【対策方法】\n\n■ 塗装方法での対策\n1. 内面塗装専用ガンを使��\n2. 電圧を下げる（40-60kV）\n3. 塗装距離を近づける\n4. 角度を変えて複数回塗装\n\n■ 製品設計での対策\n��窪みの深さを浅くする\n・開口部を大きくする\n・分割して塗装→組立\n\n■ 前処理での対策\n・導電性プライマーを使用\n・最初は非静電で���塗り\n\n完全な解決は難しく、形状に応じた工夫が必要です。",
+            tags: ["静電", "ファラデーケージ", "対策"]
+          }
+        ]
+      }
+    ];
+
+    const chatResponses = {
+      "エアレス": "エアレス塗装は、塗料を高圧（10-30MPa）で吐出し、オリフィスを通過させることで霧化する方式です。大面積の塗装に適しており、作業効率が高いのが特徴です。詳しくは基本編のFAQもご確認ください。",
+      "高圧洗浄": "高圧洗浄機は、水を高圧で噴射して汚れを落とす機器です。圧力は5-30MPa程度で、家庭用から業務用まで様々なモデルがあります。",
+      "静電": "静電塗装は、塗料に電荷を与えて被塗物に吸着させる方式です。塗着効率が高く、複雑な形状にも対応できます。",
+      "温風低圧": "温風低圧（HVLP）は、低圧の温風で塗料を霧化する方式です。塗着効率が高く、環境負荷が低いのが特徴です。",
+      "粉体": "粉体塗装は、粉末状の塗料を静電気で付着させ、加熱硬化させる方式です。VOCフリーで環境に優しい塗装方法です。",
+      "液体": "液体塗装は、溶剤系または水系の塗料を使用する従来の塗装方式です。色替えが容易で、様々な仕上がりに対応できます。"
+    };
+
+    const defaultConfig = {
+      site_title: "よくある質問",
+      search_placeholder: "キーワードで検索...",
+      contact_title: "お問い合わせ",
+      footer_text: "© 2026 日本ワグナー・スプレーテック株式会社",
+      background_color: "#f8fafc",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#eab308",
+      secondary_action_color: "#78716c"
+    };
+
+    let config = { ...defaultConfig };
+    let inquiries = [];
+    let currentCategory = null;
+
+    const dataHandler = {
+      onDataChanged(data) {
+        inquiries = data;
+      }
+    };
+
+    async function initApp() {
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (newConfig) => {
+            config = { ...defaultConfig, ...newConfig };
+            applyConfig();
+          },
+          mapToCapabilities: (cfg) => ({
+            recolorables: [
+              { get: () => cfg.background_color || defaultConfig.background_color, set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+              { get: () => cfg.surface_color || defaultConfig.surface_color, set: (v) => { cfg.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+              { get: () => cfg.text_color || defaultConfig.text_color, set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+              { get: () => cfg.primary_action_color || defaultConfig.primary_action_color, set: (v) => { cfg.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+              { get: () => cfg.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { cfg.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (cfg) => new Map([
+            ["site_title", cfg.site_title || defaultConfig.site_title],
+            ["search_placeholder", cfg.search_placeholder || defaultConfig.search_placeholder],
+            ["contact_title", cfg.contact_title || defaultConfig.contact_title],
+            ["footer_text", cfg.footer_text || defaultConfig.footer_text]
+          ])
+        });
+        config = { ...defaultConfig, ...window.elementSdk.config };
+      }
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error("Failed to initialize Data SDK");
+        }
+      }
+
+      applyConfig();
+      renderBasicFAQs();
+      renderCategories();
+      setupEventListeners();
+    }
+
+    function applyConfig() {
+      document.getElementById('site-title').textContent = config.site_title || defaultConfig.site_title;
+      document.getElementById('search-input').placeholder = config.search_placeholder || defaultConfig.search_placeholder;
+      document.getElementById('contact-title').textContent = config.contact_title || defaultConfig.contact_title;
+      document.getElementById('footer-text').textContent = config.footer_text || defaultConfig.footer_text;
+    }
+
+    function renderBasicFAQs() {
+      const container = document.getElementById('basic-faq');
+      container.innerHTML = basicFAQs.map(faq => `
+        <div class="bg-white rounded-xl shadow-sm border-2 border-stone-200 overflow-hidden" data-faq-id="${faq.id}">
+          <button class="accordion-trigger w-full px-6 py-4 flex items-center justify-between text-left hover:bg-yellow-50 transition-colors" onclick="toggleAccordion(${faq.id})">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 bg-yellow-400 text-stone-900 rounded-full flex items-center justify-center font-bold text-sm border border-stone-900">Q</span>
+              <span class="font-medium text-stone-800">${faq.question}</span>
+            </div>
+            <svg class="accordion-icon w-5 h-5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          <div class="accordion-content px-6 bg-yellow-50">
+            <div class="flex gap-3">
+              <span class="w-8 h-8 bg-stone-900 text-yellow-400 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 border border-stone-900">A</span>
+              <p class="text-stone-700 leading-relaxed">${faq.answer}</p>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-2 pl-11">
+              ${faq.tags.map(tag => `<span class="px-2 py-1 bg-yellow-200 text-stone-800 text-xs rounded-full border border-yellow-400">${tag}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCategories() {
+      const container = document.getElementById('categories');
+      container.innerHTML = categories.map(cat => `
+        <div class="category-card bg-white rounded-xl shadow-sm border border-slate-100 p-4 cursor-pointer hover:border-blue-200" onclick="showCategoryQuestions('${cat.id}')">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 ${cat.color} rounded-xl flex items-center justify-center text-2xl border-2 border-stone-900">
+              ${cat.icon}
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-800">${cat.name}</h3>
+              <p class="text-xs text-slate-500">${cat.questions.length}件のQ&A</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleAccordion(id) {
+      const faqElement = document.querySelector(`[data-faq-id="${id}"]`);
+      const content = faqElement.querySelector('.accordion-content');
+      const icon = faqElement.querySelector('.accordion-icon');
+      
+      content.classList.toggle('open');
+      icon.classList.toggle('rotate');
+    }
+
+    function showCategoryQuestions(categoryId) {
+      const category = categories.find(c => c.id === categoryId);
+      if (!category) return;
+
+      currentCategory = category;
+
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('category-detail-view').classList.remove('hidden');
+      document.getElementById('answer-detail-view').classList.add('hidden');
+
+      document.getElementById('detail-icon').textContent = category.icon;
+      document.getElementById('detail-icon').className = `w-16 h-16 ${category.color} rounded-2xl flex items-center justify-center text-4xl border-2 border-stone-900`;
+      document.getElementById('detail-title').textContent = category.name;
+      document.getElementById('detail-description').textContent = category.description;
+
+      const questionsLinks = document.getElementById('questions-links');
+      questionsLinks.innerHTML = category.questions.map((q, idx) => `
+        <a href="#" onclick="showAnswerDetail('${categoryId}', '${q.id}'); return false;" class="flex items-center gap-3 p-4 rounded-lg hover:bg-yellow-50 transition-colors border-2 border-transparent hover:border-yellow-400 group fade-in" style="animation-delay: ${idx * 0.05}s">
+          <span class="w-8 h-8 bg-yellow-400 text-stone-900 rounded-full flex items-center justify-center font-bold text-sm border border-stone-900 flex-shrink-0 group-hover:scale-110 transition-transform">Q</span>
+          <span class="text-stone-800 font-medium group-hover:text-stone-900">${q.q}</span>
+          <svg class="w-5 h-5 text-stone-400 ml-auto group-hover:text-yellow-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      `).join('');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showAnswerDetail(categoryId, questionId) {
+      const category = categories.find(c => c.id === categoryId);
+      if (!category) return;
+
+      const question = category.questions.find(q => q.id === questionId);
+      if (!question) return;
+
+      currentCategory = category;
+
+      document.getElementById('home-view').classList.add('hidden');
+      document.getElementById('category-detail-view').classList.add('hidden');
+      document.getElementById('answer-detail-view').classList.remove('hidden');
+
+      document.getElementById('answer-question').textContent = question.q;
+      document.getElementById('answer-content').textContent = question.a;
+      
+      const tagsContainer = document.getElementById('answer-tags');
+      tagsContainer.innerHTML = question.tags.map(tag => 
+        `<span class="px-3 py-1 bg-yellow-200 text-stone-800 text-sm rounded-full border border-yellow-400">${tag}</span>`
+      ).join('');
+
+      const relatedQuestions = category.questions.filter(q => q.id !== questionId).slice(0, 3);
+      const relatedContainer = document.getElementById('related-questions');
+      relatedContainer.innerHTML = relatedQuestions.map(q => `
+        <a href="#" onclick="showAnswerDetail('${categoryId}', '${q.id}'); return false;" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white transition-colors border border-yellow-200 hover:border-yellow-400 group">
+          <span class="w-6 h-6 bg-yellow-400 text-stone-900 rounded-full flex items-center justify-center font-bold text-xs border border-stone-900 flex-shrink-0">Q</span>
+          <span class="text-stone-700 text-sm group-hover:text-stone-900">${q.q}</span>
+          <svg class="w-4 h-4 text-stone-400 ml-auto group-hover:text-yellow-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      `).join('');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setupEventListeners() {
+      document.getElementById('back-to-home').addEventListener('click', () => {
+        document.getElementById('category-detail-view').classList.add('hidden');
+        document.getElementById('answer-detail-view').classList.add('hidden');
+        document.getElementById('home-view').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      document.getElementById('back-to-category').addEventListener('click', () => {
+        if (currentCategory) {
+          document.getElementById('answer-detail-view').classList.add('hidden');
+          document.getElementById('home-view').classList.add('hidden');
+          document.getElementById('category-detail-view').classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+
+      document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tag = btn.dataset.tag;
+          document.getElementById('search-input').value = tag;
+          document.getElementById('search-input').dispatchEvent(new Event('input'));
+        });
+      });
+
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+      const searchResultsList = document.getElementById('search-results-list');
+
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (query.length < 2) {
+          searchResults.classList.add('hidden');
+          return;
+        }
+
+        const results = [];
+        
+        basicFAQs.forEach(faq => {
+          if (faq.question.toLowerCase().includes(query) || 
+              faq.answer.toLowerCase().includes(query) ||
+              faq.tags.some(tag => tag.toLowerCase().includes(query))) {
+            results.push({ type: 'faq', data: faq });
+          }
+        });
+
+        categories.forEach(cat => {
+          cat.questions.forEach(q => {
+            if (q.q.toLowerCase().includes(query) || q.a.toLowerCase().includes(query) || q.tags.some(tag => tag.toLowerCase().includes(query))) {
+              results.push({ type: 'category', category: cat.name, categoryId: cat.id, data: q });
+            }
+          });
+        });
+
+        if (results.length > 0) {
+          searchResultsList.innerHTML = results.slice(0, 8).map((result, idx) => {
+            if (result.type === 'faq') {
+              return `
+                <div class="p-3 bg-white hover:bg-yellow-100 rounded-lg cursor-pointer transition-colors border border-stone-200" style="animation-delay: ${idx * 0.05}s" onclick="toggleAccordion(${result.data.id}); document.getElementById('search-results').classList.add('hidden'); document.getElementById('category-detail-view').classList.add('hidden'); document.getElementById('answer-detail-view').classList.add('hidden'); document.getElementById('home-view').classList.remove('hidden'); window.scrollTo({top: 0, behavior: 'smooth'});">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 bg-yellow-200 text-stone-900 text-xs rounded border border-yellow-400">基本編</span>
+                    <span class="text-stone-700 text-sm">${result.data.question}</span>
+                  </div>
+                </div>
+              `;
+            } else {
+              return `
+                <div class="p-3 bg-white hover:bg-yellow-100 rounded-lg cursor-pointer transition-colors border border-stone-200" style="animation-delay: ${idx * 0.05}s" onclick="showAnswerDetail('${result.categoryId}', '${result.data.id}'); document.getElementById('search-results').classList.add('hidden');">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 bg-yellow-200 text-stone-900 text-xs rounded border border-yellow-400">${result.category}</span>
+                    <span class="text-stone-700 text-sm">${result.data.q}</span>
+                  </div>
+                </div>
+              `;
+            }
+          }).join('');
+          searchResults.classList.remove('hidden');
+        } else {
+          searchResultsList.innerHTML = '<p class="text-stone-500 text-sm p-3">検索結果が見つかりませんでした</p>';
+          searchResults.classList.remove('hidden');
+        }
+      });
+
+      const contactForm = document.getElementById('contact-form');
+      const formMessage = document.getElementById('form-message');
+      const submitBtn = document.getElementById('submit-btn');
+
+      contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (inquiries.length >= 999) {
+          formMessage.innerHTML = '<div class="bg-red-100 text-red-700 p-4 rounded-lg">お問い合わせの上限に達しました。</div>';
+          formMessage.classList.remove('hidden');
+          return;
+        }
+
+        const name = document.getElementById('contact-name').value;
+        const email = document.getElementById('contact-email').value;
+        const category = document.getElementById('contact-category').value;
+        const message = document.getElementById('contact-message').value;
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>送信中...</span>';
+
+        if (window.dataSdk) {
+          const result = await window.dataSdk.create({
+            name,
+            email,
+            category,
+            message,
+            createdAt: new Date().toISOString()
+          });
+
+          if (result.isOk) {
+            formMessage.innerHTML = '<div class="bg-emerald-100 text-emerald-700 p-4 rounded-lg flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>お問い合わせを受け付けました。ありがとうございます。</div>';
+            contactForm.reset();
+          } else {
+            formMessage.innerHTML = '<div class="bg-red-100 text-red-700 p-4 rounded-lg">送信に失敗しました。もう一度お試しください。</div>';
+          }
+        } else {
+          formMessage.innerHTML = '<div class="bg-emerald-100 text-emerald-700 p-4 rounded-lg flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>お問い合わせを受け付けました（デモモード）。</div>';
+          contactForm.reset();
+        }
+
+        formMessage.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>送信する</span><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>';
+      });
+
+      // Chatbot functionality
+      const chatToggleBtn = document.getElementById('chat-toggle-btn');
+      const chatWindow = document.getElementById('chat-window');
+      const chatCloseBtn = document.getElementById('chat-close-btn');
+      const chatForm = document.getElementById('chat-form');
+      const chatInput = document.getElementById('chat-input');
+      const chatMessages = document.getElementById('chat-messages');
+
+      chatToggleBtn.addEventListener('click', () => {
+        chatWindow.classList.toggle('hidden');
+        if (!chatWindow.classList.contains('hidden')) {
+          chatInput.focus();
+        }
+      });
+
+      chatCloseBtn.addEventListener('click', () => {
+        chatWindow.classList.add('hidden');
+      });
+
+      document.querySelectorAll('.quick-q-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const question = btn.dataset.question;
+          chatInput.value = question;
+          chatForm.dispatchEvent(new Event('submit'));
+        });
+      });
+
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
+
+        // Add user message
+        addChatMessage(userMessage, 'user');
+        chatInput.value = '';
+
+        // Simulate AI response
+        setTimeout(() => {
+          const response = generateAIResponse(userMessage);
+          addChatMessage(response, 'ai');
+        }, 500);
+      });
+
+      function addChatMessage(message, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'flex gap-3 fade-in';
+        
+        if (sender === 'user') {
+          messageDiv.classList.add('flex-row-reverse');
+          messageDiv.innerHTML = `
+            <div class="w-8 h-8 bg-stone-900 rounded-full flex items-center justify-center flex-shrink-0 border border-yellow-400">
+              <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+            </div>
+            <div class="bg-yellow-400 text-stone-900 rounded-2xl rounded-tr-none px-4 py-3 shadow-sm border border-stone-900 max-w-[80%]">
+              <p class="text-sm leading-relaxed">${message}</p>
+            </div>
+          `;
+        } else {
+          messageDiv.innerHTML = `
+            <div class="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 border border-stone-900">
+              <svg class="w-5 h-5 text-stone-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>
+            </div>
+            <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm border border-stone-200 max-w-[80%]">
+              <p class="text-stone-700 text-sm leading-relaxed whitespace-pre-line">${message}</p>
+            </div>
+          `;
+        }
+
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function generateAIResponse(message) {
+        const lowerMessage = message.toLowerCase();
+
+        // エアレス関連
+        if (lowerMessage.includes('エアレス') && lowerMessage.includes('とは')) {
+          return 'エアレスは、塗料を高圧（10-30MPa）で吐出し、オリフィスを通過させることで霧化する塗装方式です。\n\n【メリット】\n・作業効率が高い\n・大面積に適している\n・塗膜が厚い\n\n【デメリット】\n・仕上がりがやや粗い\n・オーバースプレーが多い\n\nもっと詳しく知りたいことはありますか？';
+        }
+
+        if (lowerMessage.includes('エアレス') && (lowerMessage.includes('選び方') || lowerMessage.includes('ポンプ'))) {
+          return 'エアレスポンプの選び方のポイント：\n\n1. 吐出量：1日の作業量に応じて選択\n2. 最高圧力：塗料の粘度に対応\n3. 最大チップサイズ：面積と仕上がりで決定\n4. 電源：現場環境に合わせる\n\n小規模現場：2.5L/min程度\n大規模現場：5L/min以上\n\n具体的な機種についてお知りになりたいですか？';
+        }
+
+        if (lowerMessage.includes('チップ') && (lowerMessage.includes('サイズ') || lowerMessage.includes('選び方'))) {
+          return 'チップサイズの目安：\n\n【小チップ（0.009-0.013"）】\n・ステイン、ニス等\n・細かい仕上がり\n\n【中チップ（0.015-0.021"）】\n・一般建築用塗料\n・最も汎用性が高い\n\n【大チップ（0.023-0.031"）】\n・高粘度塗料、防水材\n・大面積塗装\n\n塗料メーカー推奨値の1.5倍の圧力余裕を見ることをおすすめします。';
+        }
+
+        // 高圧洗浄機関連
+        if (lowerMessage.includes('高圧洗浄') || lowerMessage.includes('洗浄機')) {
+          return '高圧洗浄機についてお答えします。\n\n【圧力設定の目安】\n・一般的な汚れ：10-15MPa\n・頑固な汚れ：15-20MPa\n・コンクリート：20-30MPa\n\n【ノズルの使い分け】\n・0度（赤）：最高圧、頑固な汚れ\n・15度（黄）：高圧、壁面洗浄\n・25度（緑）：中圧、一般外壁\n・40度（白）：低圧、デリケートな表面\n\n具体的に知りたいことはありますか？';
+        }
+
+        // HVLP温風低圧関連
+        if (lowerMessage.includes('hvlp') || lowerMessage.includes('温風低圧')) {
+          return 'HVLP（温風低圧）塗装について：\n\n【特徴】\n・低圧（0.07MPa以下）で温風使用\n・塗着効率が高い（70-80%）\n・環境に優しい\n\n【温度設定】\n・水性塗料：40-50℃\n・溶剤系：50-60℃\n・高粘度：60-70℃\n\n【適した塗料】\n・水性塗料各種\n・低粘度ウレタン\n・ラッカー系\n\nもっと詳しい調整方法をお知りになりたいですか？';
+        }
+
+        // 静電塗装関連
+        if (lowerMessage.includes('静電')) {
+          return '静電塗装についてご説明します。\n\n【仕組み】\n塗料粒子に電荷を与え、接地された被塗物との静電引力で塗着させる方式です。\n\n【メリット】\n・塗着効率が高い\n・裏回りが良好\n・複雑形状に適している\n\n【電圧設定】\n・液体塗装：60-100kV\n・粉体塗装：60-90kV\n\n【注意点】\n・被塗物は完全にアース\n・アース抵抗は1MΩ以下\n\n何か具体的に知りたいことはありますか？';
+        }
+
+        // メンテナンス関連
+        if (lowerMessage.includes('メンテナンス') || lowerMessage.includes('手入れ') || lowerMessage.includes('清掃')) {
+          return '定期メンテナンスのポイント：\n\n【日常メンテナンス】\n・使用後のフラッシング（洗浄）\n・フィルターの清掃\n・チップの洗浄\n\n【定期メンテナンス（月1回）】\n・摩耗部品のチェック\n・パッキン交換\n・可動部への注油\n\n【保管時】\n・保護オイルでコーティング\n・分解して乾燥保管\n\nどの機器のメンテナンスについて詳しく知りたいですか？';
+        }
+
+        // 故障・トラブル関連
+        if (lowerMessage.includes('故障') || lowerMessage.includes('トラブル') || lowerMessage.includes('動かない')) {
+          return 'トラブルシューティング：\n\n【よくあるトラブル】\n\n1. 塗料が出ない\n→フィルター詰まり確認\n→圧力設定確認\n\n2. 霧化不良\n→チップ摩耗確認\n→塗料粘度確認\n\n3. パターン不良\n→ノズル清掃\n→エア圧調整\n\n【緊急時】\n・電源を切る\n・圧力を抜く\n・専門業者に連絡\n\nどのような症状でお困りですか？具体的に教えていただければより詳しくお答えできます。';
+        }
+
+        // 塗料関連
+        if (lowerMessage.includes('塗料') && (lowerMessage.includes('希釈') || lowerMessage.includes('薄め'))) {
+          return '塗料の希釈率について：\n\n【水性塗料】\n・一般：5-10%\n・高粘度：10-15%\n・ステイン：そのまま～5%\n\n【溶剤系塗料】\n・ラッカー：10-20%\n・ウレタン：5-10%\n・エポキシ：メーカー指定通り\n\n【確認方法】\n1. 粘度カップで20-30秒を目安\n2. 試し吹きで霧化確認\n3. 垂れやピンホールチェック\n\n※必ずメーカー推奨値を優先してください。';
+        }
+
+        // 粉体塗装関連
+        if (lowerMessage.includes('粉体') || lowerMessage.includes('粉体塗装')) {
+          return '粉体塗装について：\n\n【特徴】\n・溶剤不使用でVOCフリー\n・塗着効率が高い（95%以上）\n・耐久性に優れる\n\n【焼付条件】\n・温度：180-200℃\n・時間：15-20分\n・測定：製品表面温度\n\n【膜厚管理】\n・標準：60-80μm\n・防食重視：80-120μm\n\n粉体塗装について、もっと詳しく知りたいことはありますか？';
+        }
+
+        // デフォルト応答
+        const defaultResponses = [
+          'ご質問ありがとうございます。\n\n申し訳ございませんが、その質問については詳しい情報を持ち合わせていません。\n\nよくある質問セクションをご確認いただくか、お問い合わせフォームからご連絡ください。担当者が詳しくご説明いたします。',
+          'お探しの情報が見つかりませんでしたか？\n\n以下のカテゴリーから関連する質問をご覧いただけます：\n・エアレス塗装\n・高圧洗浄機\n・温風低圧（HVLP）\n・静電塗装\n・粉体塗装\n\nもしくは、具体的な機種名や症状を教えていただければ、より詳しくお答えできます。',
+          'ご不明な点について、もう少し詳しく教えていただけますか？\n\n例えば：\n・どの機器についての質問ですか？\n・どのような作業をされていますか？\n・何かトラブルが発生していますか？\n\nより具体的にお答えできるよう、詳細をお聞かせください。'
+        ];
+
+        return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+      }
+    }
+
+    initApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c8660e68326b418',t:'MTc3MDE2ODM3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
